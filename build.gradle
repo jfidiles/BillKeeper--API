@@ -1,0 +1,62 @@
+
+// Tells Gradle where to look for plugins.
+repositories {
+    mavenCentral()
+}
+
+// The plugins for Gradle.
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+
+/**
+ * App settings
+ */
+
+// Config for the JAR archive.
+jar {
+    baseName = 'BillKeeper'
+    version =  '0.1.0'
+}
+
+// Java version configuration.
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+// Declare framework dependencies to use in our app.
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework:spring-jdbc")
+    compile("org.xerial:sqlite-jdbc:3.8.9.1")
+    compile("com.nimbusds:nimbus-jose-jwt:4.10")
+    compile("org.mindrot:jbcrypt:0.3m")
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile("junit:junit")
+}
+
+/**
+ * Define tasks
+ */
+
+// Declare external dependencies for the build script
+buildscript() {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.7.RELEASE")
+        classpath("org.xerial:sqlite-jdbc:3.8.9.1")
+        classpath("com.nimbusds:nimbus-jose-jwt:4.10")
+        classpath("org.mindrot:jbcrypt:0.3m")
+    }
+}
+
+// Set default task which runs when no parameters are specified (just ./gradlew)
+defaultTasks 'build', 'run'
+
+// Configuration for the build task (./gradlew build). Force it to run clean before build.
+// mustRunAfter must be specified otherwise the clean and build run at the same time.
+build.dependsOn clean
+build.mustRunAfter clean
